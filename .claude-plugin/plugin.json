@@ -1,0 +1,16 @@
+{
+  "name": "solberg-data-bridge",
+  "displayName": "Solberg Data Bridge",
+  "version": "1.0.0",
+  "description": "Read the Solberg accounts and profile fields you choose to share, and separately authorized Terminal research, for questions, comparisons, summaries and exports.",
+  "author": {
+    "name": "Solberg Invest",
+    "email": "oskar@solberginvest.com",
+    "url": "https://solberginvest.com"
+  },
+  "homepage": "https://solberginvest.com/portfolio-for-chatgpt",
+  "privacyPolicyUrl": "https://solberginvest.com/privacy",
+  "icon": "./.claude-plugin/icon.png",
+  "license": "UNLICENSED",
+  "keywords": ["solberg", "portfolio", "research", "data"]
+}

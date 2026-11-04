@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "solberg": {
+      "type": "http",
+      "url": "https://solberginvest.com/api/chatgpt/mcp"
+    }
+  }
+}
