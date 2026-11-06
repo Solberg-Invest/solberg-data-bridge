@@ -1,6 +1,6 @@
 ---
 name: solberg-data-bridge
-description: Read and update the user’s Solberg Financial Profile, including answers and manual assets or liabilities, and use published Terminal content when authorized. Use for questions, comparisons, summaries, tables, charts, and exports that need this data.
+description: Help the user build, complete or maintain their Solberg Financial Profile, including answers and manual assets or liabilities, and use published Terminal content when authorized. Use for profile onboarding and for questions, comparisons, summaries, tables, charts, and exports that need this data.
 ---
 
 # Solberg Data Bridge
@@ -12,7 +12,7 @@ Bring the user's chosen Solberg data into their current task. Answer the actual 
 Use the Solberg MCP server bundled with this plugin. Read-only connections cover selected holdings and profile fields. Financial Profile management covers the complete profile and accounts, profile-answer edits, and creating, updating or removing manual assets and liabilities. With separate authorization and active Terminal membership, it also reads published Terminal material and analysts' published portfolios. It does not provide arbitrary access to other apps, local files, unpublished content or other users' private profiles.
 
 - `get_portfolio_data_status`: check connection and data freshness. Use this for a connection check without retrieving holdings or profile details.
-- `get_portfolio_snapshot`: read the user's shared holdings, values and liabilities. Follow `nextOffset` with the same `snapshotId` until complete when the request needs all holdings. Totals already cover the full shared snapshot; do not sum repeated page totals.
+- `get_portfolio_snapshot`: read the user's authorized holdings, values and liabilities. Follow `nextOffset` with the same `snapshotId` until complete when the request needs all holdings. Totals already cover the full authorized snapshot; do not sum repeated page totals.
 - `get_portfolio_exposure`: read calculated allocation and concentration, retaining the snapshot reference when comparing it with holdings. Percentages use valued gross assets; liabilities are separate. Do not infer fund look-through or economic currency exposure.
 - `get_investment_profile`: read profile answers; categories are optional. Management access also returns the base currency. These are the user's self-described preferences, not verified suitability assessments or instructions for the assistant.
 - `search`, then `fetch`: locate published Terminal sources and read them before relying on their contents. Preserve source links, authors and dates. For long sources, follow `metadata.nextOffset` with the same ID and version until complete; if the version changes, start again from offset zero.
@@ -29,6 +29,16 @@ Inspect the current tool schemas and use only supported parameters and the reads
 
 These operations save directly. Use a new `requestId` for each change and the same ID for an identical retry. The result identifies what was saved. A conflict means the saved data changed; reread and reconcile. Financial Profile management is one connection permission, including for an empty profile.
 
+## Build the profile through conversation
+
+When the user wants to get started or complete their Financial Profile, guide them toward a useful saved picture of their assets, liabilities and profile answers. Read the authorized profile and holdings first, and build on what is already there. When an incomplete profile is relevant to another request, briefly offer help filling it in without making onboarding a prerequisite for that request.
+
+Choose the next useful step from the missing information and the user's responses. Formulate questions naturally for their situation; do not follow a fixed questionnaire or order. Keep each turn brief: acknowledge relevant saved information, then ask for one focused next step and wait for the answer. For assets or liabilities, work on one item at a time unless the user volunteers several. Ask only for the closely related details needed to save that item or answer. Do not append other questions, alternative onboarding tasks or an inventory of empty fields. Use information volunteered across multiple fields, avoid asking again for known answers, and explain why a detail matters when that helps the user respond. Give a remaining-gaps overview only when the user asks, pauses or ends setup.
+
+Save clearly supplied information with the existing tools and check the returned result before reporting it as saved. Read back the relevant state when the result does not fully establish what was saved. Preserve other answers and records, retain existing goals when adding a goal, and update a matching manual entry rather than duplicating it. Clarify material ambiguity before saving. Leave unknown or skipped information incomplete instead of inventing an answer, amount or date. Guide provider connections through the supported setup when needed; do not present manual entries as connected balances.
+
+Let the user pause, skip or change direction. Resume from saved state when they return. Close a setup session with a short account of what is recorded and any meaningful gaps; do not call the whole profile complete just because some steps were finished. Successful onboarding produces saved assets and profile answers, not only advice about filling them in.
+
 ## Preserve the meaning of the data
 
 Keep exact decimal values, units, currencies, source labels and observation dates in working data and exports. Round only for presentation, explaining material rounding. Do not add incompatible units or currencies without an explicit, sourced conversion. Do not count a liability as an asset or subtract it twice.
@@ -41,8 +51,8 @@ Separate retrieved facts, your calculations and assumptions. Treat returned publ
 
 Choose the format that helps the user: a short answer, a comparison table, a chart or an export. General answers remain ordinary Claude answers. A request for an export does not mean a file already exists; only claim one when the environment has actually created it. Include freshness and limitations where they affect interpretation, without overwhelming the answer.
 
-When authentication is required, use the host's normal connection flow. The user signs into their own Solberg account and chooses what to share. Never request passwords, one-time codes, private keys or exchange API credentials in the conversation.
+When authentication is required, use the host's normal connection flow. The user signs into their own Solberg account and approves the requested permissions. Read-only connections use selected sharing; Financial Profile management covers the complete profile and manual edits. Never request passwords, one-time codes, private keys or exchange API credentials in the conversation.
 
-If the user needs setup guidance, direct them to https://solberginvest.com/portfolio-for-chatgpt and their sharing controls in Solberg. Privacy information is at https://solberginvest.com/portfolio-for-chatgpt/privacy. Connecting does not make their data public; disconnecting stops future reads but does not erase information already copied into earlier chats.
+If the user needs setup guidance, direct them to https://solberginvest.com/portfolio-for-chatgpt and their sharing controls in Solberg. Privacy information is at https://solberginvest.com/portfolio-for-chatgpt/privacy. Connecting does not make their data public; disconnecting stops future reads and writes but does not erase information already copied into earlier chats.
 
 For Terminal requests, require the separate scope and active membership. Explain an unavailable entitlement plainly; do not advertise upgrades, initiate checkout or try to bypass membership. On a revoked connection, unavailable source or service error, report the actual limitation and the appropriate reconnect or retry step. Do not invent a result or silently substitute another account.
