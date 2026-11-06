@@ -1,8 +1,8 @@
 {
   "name": "solberg-data-bridge",
   "displayName": "Solberg Data Bridge",
-  "version": "1.0.0",
-  "description": "Read the Solberg accounts and profile fields you choose to share, and separately authorized Terminal research, for questions, comparisons, summaries and exports.",
+  "version": "1.1.0",
+  "description": "Read and update your Solberg Financial Profile from your conversation, and use authorized Terminal publications.",
   "author": {
     "name": "Solberg Invest",
     "email": "oskar@solberginvest.com",
